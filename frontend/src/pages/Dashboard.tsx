@@ -30,7 +30,7 @@ const Dashboard: React.FC = () => {
 
         <div
           className="bg-gray-800 p-4 rounded-2xl shadow-md hover:bg-gray-700 cursor-pointer transition duration-300 ease-in-out transform hover:scale-105"
-          onClick={() => navigate("/files")}
+          onClick={() => navigate(`/files/${localStorage.getItem('device_id')}`)}
         >
           <h2 className="text-xl font-semibold mb-2">📂 File Explorer</h2>
           <p className="text-sm text-gray-300">Browse & manage files over SSH</p>

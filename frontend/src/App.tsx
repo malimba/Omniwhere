@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Terminal from './components/Terminal';
 import TerminalPage from './pages/TerminalPage';
+import FilesExplorer from './pages/FileExplorer'
 import Dashboard from "./pages/Dashboard";
 import {Navigate } from 'react-router-dom';
 import { logout } from "./utils/logout";
@@ -39,6 +40,14 @@ function App(){
                      element={
                        <PrivateRoute>
                          <TerminalPage />
+                       </PrivateRoute>
+                     }
+                    />
+                    <Route
+                     path="/files/:deviceId"
+                     element={
+                       <PrivateRoute>
+                         <FilesExplorer deviceId={localStorage.getItem("device_id")}/>
                        </PrivateRoute>
                      }
                     />

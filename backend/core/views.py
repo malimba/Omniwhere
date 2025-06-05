@@ -1,4 +1,9 @@
 import os
+
+from django.http import FileResponse
+from django.shortcuts import get_object_or_404
+from rest_framework.parsers import MultiPartParser
+
 from .models import Device
 from django.utils import timezone
 from asgiref.sync import async_to_sync
@@ -55,7 +60,8 @@ class RegisterDeviceView(APIView):
                 "ssh_username": ssh_username,
                 "ssh_password": ssh_password,
                 "name": name,
-                "last_seen": timezone.now()
+                "last_seen": timezone.now(),
+                "root_path": f"/home/{user.username}",
             }
         )
 
@@ -68,38 +74,126 @@ class RegisterDeviceView(APIView):
 
 
 # File list view via SSH
+
+#helper function
+def secure_path_join(base_path, *paths):
+    # Prevent directory traversal attacks
+    final_path = os.path.abspath(os.path.join(base_path, *paths))
+    if not final_path.startswith(os.path.abspath(base_path)):
+        raise Exception("Invalid path traversal attempt")
+    return final_path
 class FileListView(APIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
 
-    async def get_file_list(self, host, port, username, key_path):
+    def get_device(self, device_id, user):
+        return get_object_or_404(Device, device_id=device_id, user=user)
+
+
+    def get(self, request, device_id):
+        device = self.get_device(device_id, request.user)
+
+        base_path = device.root_path #todo: redefine this path or just assuming it's the home path
+        rel_path = request.query_params.get("path", "")
+
         try:
-            async with asyncssh.connect(
-                host,
-                port=port,
-                username=username,
-                client_keys=[key_path],
-                known_hosts=None  # Don't use in production
-            ) as conn:
-                result = await conn.run('ls', check=True)
-                return result.stdout.strip().split('\n')
+            abs_path = secure_path_join(base_path, rel_path)
+            if not os.path.exists(abs_path):
+                return Response({"error": "Path not found"}, status=404)
+            if not os.path.isdir(abs_path):
+                return Response({"error": "Not a directory"}, status=400)
+
+            contents = []
+            for item in os.listdir(abs_path):
+                item_path = os.path.join(abs_path, item)
+                contents.append({
+                    "name": item,
+                    "is_dir": os.path.isdir(item_path),
+                    "size": os.path.getsize(item_path) if os.path.isfile(item_path) else None,
+                    "path": os.path.relpath(item_path, base_path),
+                })
+
+            return Response({
+                "current_path": os.path.relpath(abs_path, base_path),
+                "contents": contents,
+            })
         except Exception as e:
-            return f"SSH connection failed: {str(e)}"
+            return Response({"error": str(e)}, status=400)
 
-    def get(self, request):
-        # You can replace this with DB lookup or request.user info
-        host = request.query_params.get('host', 'localhost')
-        port = int(request.query_params.get('port', 22))
-        username = request.query_params.get('username', 'malimba')
-        key_path = os.path.expanduser("~/.ssh/id_rsa")
+    def post(self, request, device_id):
+        """
+        Upload a file to the current directory path.
+        Params:
+          - path (optional): target directory relative to base_path
+          - file (form-data): uploaded file
+        """
+        device = self.get_device(device_id, request.user)
 
-        result = async_to_sync(self.get_file_list)(host, port, username, key_path)
+        base_path = device.root_path
+        rel_path = request.query_params.get("path", "")
+        abs_path = secure_path_join(base_path, rel_path)
 
-        if isinstance(result, str):  # Error string returned
-            return Response({"error": result}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if not os.path.isdir(abs_path):
+            return Response({"error": "Target directory not found"}, status=404)
 
-        return Response({"files": result}, status=status.HTTP_200_OK)
+        upload_file = request.FILES.get("file")
+        if not upload_file:
+            return Response({"error": "No file uploaded"}, status=400)
+
+        save_path = os.path.join(abs_path, upload_file.name)
+
+        with open(save_path, "wb+") as destination:
+            for chunk in upload_file.chunks():
+                destination.write(chunk)
+
+        return Response({"message": f"File '{upload_file.name}' uploaded successfully."})
+
+    def delete(self, request, device_id):
+        """
+        Delete a file or empty directory.
+        Params:
+          - path (required): relative path of file/dir to delete
+        """
+        device = self.get_device(device_id, request.user)
+
+        base_path = device.root_path
+        rel_path = request.query_params.get("path")
+        if not rel_path:
+            return Response({"error": "Parameter 'path' required"}, status=400)
+
+        try:
+            abs_path = secure_path_join(base_path, rel_path)
+            if not os.path.exists(abs_path):
+                return Response({"error": "Path not found"}, status=404)
+
+            if os.path.isdir(abs_path):
+                os.rmdir(abs_path)  # Only deletes empty dirs
+            else:
+                os.remove(abs_path)
+
+            return Response({"message": f"'{rel_path}' deleted successfully."})
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
+#fie download endpoint
+class DeviceFileDownloadView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_device(self, device_id, user):
+        return get_object_or_404(Device, device_id=device_id, user=user)
 
 
+    def get(self, request, device_id):
+        device = self.get_device(device_id, request.user)
+        base_path = device.root_path
+        rel_path = request.query_params.get("path", "")
+
+        abs_path = secure_path_join(base_path, rel_path)
+
+        if not os.path.isfile(abs_path):
+            return Response({"error": "File not found"}, status=404)
+
+        response = FileResponse(open(abs_path, 'rb'), as_attachment=True)
+        return response
 
 #logout view
 class LogoutView(APIView):
