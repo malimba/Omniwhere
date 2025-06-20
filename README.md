@@ -52,20 +52,22 @@ This is just the beginning of a broader vision: an interoperable system that giv
 
 ## 📁 Project Structure
 
+```plaintext
 omniwhere/
-├── backend/ # Django core + API + WebSocket server
-│ ├── omniwhere/ # ASGI config, settings, URLs
-│ ├── core/ # Auth, SSH, file APIs
-│ └── requirements.txt
-├── frontend/ # Vite + React SPA
-│ ├── src/pages/ # Login, Dashboard
-│ ├── src/components/ # Nav, Terminal, FileExplorer
-│ ├── App.tsx
-│ └── main.tsx
-├── device-agent/ # Remote agent script
-│ ├── agent.sh
-│ └── config/.omniwhere-agent.conf
+├── backend/               # Django core + API + WebSocket server
+│   ├── omniwhere/         # ASGI config, settings, URLs
+│   ├── core/              # Auth, SSH, file APIs
+│   └── requirements.txt
+├── frontend/              # Vite + React SPA
+│   ├── src/pages/         # Login, Dashboard
+│   ├── src/components/    # Nav, Terminal, FileExplorer
+│   ├── App.tsx
+│   └── main.tsx
+├── device-agent/          # Remote agent script
+│   ├── agent.sh
+│   └── config/.omniwhere-agent.conf
 └── README.md
+
 
 ---
 
