@@ -1,70 +1,85 @@
-# Omniwhere Technologies 🌐
-
+# Omniwhere Technologies 🌐  
 **Your OS. Your Files. Anywhere. On Any Device.**
 
-Omniwhere is a new way of thinking about computing. It’s not just remote access — it’s your **entire digital life**, portable and persistent, accessible from **any device** with a browser. Powered by a **UNIX-based ecosystem**, Omniwhere offers a seamless, secure experience whether you’re running natively or connecting remotely.
+Omniwhere is a reimagined computing experience — not just remote access, but your entire digital environment, **portable and persistent**, and accessible from any device, anywhere in the world.
+
+We’re building a **UNIX-based, cloud-native ecosystem** that bridges the convenience of browser-based access with the power and extensibility of a native operating system.
 
 ---
 
-## 🧠 What is Omniwhere?
+## 🧭 Vision
 
-At its core, **Omniwhere is a cloud-native OS-like environment** — built to provide remote system-level access, real-time sessions, and device synchronization across your personal machines. It unifies your computing experience from mobile, browser, or any terminal.
+> **Omniwhere aims to blur the boundary between your local and remote environments.**  
+> Wherever you go, your OS, tools, files, and sessions follow.
 
-You can:
-- Run **Omniwhere OS** as your **primary system** or live ISO
-- Install the **Omniwhere agent** on existing devices
-- **Access your sessions via browser** — no apps, no downloads
-- Securely SSH into registered machines from anywhere
+Through a seamless interface and secure backend architecture, Omniwhere provides the freedom to **log into your own personalized computing environment** — from any browser, terminal, or future bootable device.
+
+This is just the beginning of a broader vision: an interoperable system that gives users full control over how, where, and when they access their digital workspace.
 
 ---
 
-## ✨ Key Features
+## ✨ Core Capabilities
 
-- 🌍 Web login & dashboard via React UI
-- 🔐 JWT-based secure authentication (via Django)
-- 🖥️ Live terminal access using xterm.js
-- 📂 Remote file system browsing via SSH
-- 🧠 Personal cloud OS session from any browser
-- 🧩 Easy extensibility and agent-based device registration
-- 💽 Bootable Omniwhere OS ISO (planned)
+- 🌍 **Web-based OS Access**: Reach your personalized environment from any modern browser  
+- 🔐 **Secure Auth**: JWT-backed authentication with user-based session control  
+- 💻 **Live Terminal Sessions**: SSH-enabled terminal over WebSockets with xterm.js  
+- 📁 **Remote File System Viewer**: Explore and interact with device files  
+- ⚙️ **Agent-Powered Devices**: Lightweight script registers and exposes devices securely  
+- 🧩 **Modular Design**: Built to scale with plugins and future system-level integrations  
 
 ---
 
 ## 🔧 Tech Stack (MVP)
 
-**Backend:**
-- Django + Django REST Framework
-- SimpleJWT for authentication
-- Django Channels for WebSocket support
-- Paramiko/Pexpect for SSH connections
+**Backend**  
+- Django + Django REST Framework  
+- Django Channels (WebSocket sessions)  
+- SimpleJWT for authentication  
+- Paramiko & AsyncSSH for device interaction  
 
-**Frontend:**
-- React (Vite-based) + Tailwind CSS
-- xterm.js for real-time terminal emulation
-- React Router for page navigation (Login, Dashboard, etc.)
+**Frontend**  
+- React (Vite) + TailwindCSS  
+- xterm.js for live shell access  
+- React Router for multi-page UX  
 
-**Agent:**
-- Bash script to:
-  - Register devices
-  - Open reverse SSH tunnels
-  - Provide identity and heartbeat to backend
+**Device Agent**  
+- Bash script for:
+  - Device registration
+  - Reverse SSH tunneling
+  - Heartbeat and identification
 
 ---
 
 ## 📁 Project Structure
 
-```plaintext
 omniwhere/
-├── backend/               # Django project (auth, DB, file API, WebSocket)
-│   ├── omniwhere/         # Django core (asgi.py, settings.py, urls.py)
-│   ├── core/              # App with views, models, API endpoints
-│   └── requirements.txt   # Django, DRF, channels, paramiko, etc.
-├── frontend/              # React (Vite + Tailwind) SPA
-│   ├── src/pages/         # Login, Dashboard, etc.
-│   ├── src/components/    # Navbar, Terminal, FileExplorer
-│   ├── App.tsx
-│   └── main.tsx
-├── device-agent/          # Bash agent to register device + reverse tunnel
-│   ├── agent.sh
-│   └── config/.omniwhere-agent.conf
+├── backend/ # Django core + API + WebSocket server
+│ ├── omniwhere/ # ASGI config, settings, URLs
+│ ├── core/ # Auth, SSH, file APIs
+│ └── requirements.txt
+├── frontend/ # Vite + React SPA
+│ ├── src/pages/ # Login, Dashboard
+│ ├── src/components/ # Nav, Terminal, FileExplorer
+│ ├── App.tsx
+│ └── main.tsx
+├── device-agent/ # Remote agent script
+│ ├── agent.sh
+│ └── config/.omniwhere-agent.conf
 └── README.md
+
+---
+
+## 🧪 Status
+
+> MVP in active development.  
+> Looking for contributors with experience in:  
+> - SSH/WebSocket systems  
+> - Browser virtualization / remote shell UX  
+> - OS packaging or embedded Linux scripting  
+
+---
+
+## 🤝 Want to Contribute?
+
+Open an issue, suggest a feature, or fork and build — all contributions are welcome.  
+For direct collaboration, reach out to mailto: malimbageorgeyandanbon@gnmail.com.
