@@ -2,21 +2,27 @@ name: Django CI
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
+
+concurrency:
+  group: django-ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
+    # ...rest of your workflow...
+
     strategy:
       matrix:
-        python-version: [3.8, 3.9, 3.10]  # ✅ All supported
+        python-version: [3.8, 3.9, 3.10]  
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
