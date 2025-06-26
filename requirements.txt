@@ -5,3 +5,38 @@ channels>=4.0.0
 django-cors-headers>=4.0.0
 asyncssh>=2.13.2
 
+# Django Core
+Django>=4.2
+
+# Django REST Framework
+djangorestframework>=3.14.0
+
+# Simple JWT for authentication
+djangorestframework-simplejwt>=5.2.2
+
+# Token blacklisting support
+djangorestframework-simplejwt[token_blacklist]
+
+# CORS support
+django-cors-headers>=4.0.0
+
+# Channels for WebSocket support
+channels>=4.0.0
+
+# ASGI server (needed for Channels)
+daphne>=4.0.0
+
+# Async SSH support (for SSH/WebSocket bridge)
+asyncssh>=2.13.2
+
+# Paramiko (alternative SSH library, optional)
+paramiko>=3.4.0
+
+# Optional: dotenv for environment variable management
+python-dotenv>=1.0.0
+
+# Optional: Improve request/response handling
+requests>=2.31.0
+
+
+

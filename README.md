@@ -138,6 +138,7 @@ This will:
 > * File explorer
 > * SSH WebSocket terminal
 > * Device agent reverse tunnel
+> *Basic CI for stability checks
 
 Remaining polish:
 

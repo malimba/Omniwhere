@@ -1,32 +1,68 @@
-name: Django CI
+# .github/workflows/django.yml
+name: Django CI/CD
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
-  test:
-    runs-on: ubuntu-22.04
+  build:
+
+    runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: [3.9]  # Pick a stable Python version for your backend
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_DB: omniwhere
+          POSTGRES_USER: omniuser
+          POSTGRES_PASSWORD: omnipass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
-      - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Run tests
-        run: |
-          python backend/manage.py test
+    - name: Run backend tests
+      run: |
+        cd backend
+        python manage.py test
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm install
+
+    - name: Run frontend build
+      run: |
+        cd frontend
+        npm run build
 
