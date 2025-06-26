@@ -81,6 +81,22 @@ omniwhere/
 
 ---
 
+---
+Running backend
+```bash 
+   source env/bin/activate
+   cd backend/
+   python3 -m daphne backend.asgi:application
+```
+
+---
+Running frontend
+```bash 
+   
+   cd frontend/
+   npm install
+   npm run dev
+```
 ## 🤝 Want to Contribute?
 
 Open an issue, suggest a feature, or fork and build — all contributions are welcome.  

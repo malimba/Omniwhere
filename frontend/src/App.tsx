@@ -2,10 +2,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Terminal from './components/Terminal';
 import TerminalPage from './pages/TerminalPage';
-import FilesExplorer from './pages/FileExplorer'
+import FilesExplorer from './pages/FileExplorer';
+import DeviceManager from './pages/ManageDevices';
 import Dashboard from "./pages/Dashboard";
 import {Navigate } from 'react-router-dom';
 import { logout } from "./utils/logout";
+import Navbar from './components/Navbar';
 
 function App(){
 
@@ -24,6 +26,8 @@ function App(){
 
     return(
         <Router>
+          {/* <Navbar/> */}
+          <div className="p-4">
             <Routes>
                 <Route path="/" element={<Login />} />
                  <Route path="/logout" element={<Logout />} />
@@ -51,7 +55,17 @@ function App(){
                        </PrivateRoute>
                      }
                     />
+                    <Route
+                     path="/devices"
+                     element={
+                       <PrivateRoute>
+                         <DeviceManager/>
+                       </PrivateRoute>
+                     }
+                    />
+                    <Route path="*" element={<h1>404 Not Found</h1>} />
             </Routes>
+            </div>
         </Router>
     );
 }

@@ -14,10 +14,12 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
-
+from rest_framework.generics import ListAPIView, DestroyAPIView
 from django.contrib.auth.models import User
 import asyncssh
 import asyncio
+
+from .serializers import DeviceSerializer
 
 # Custom JWT Token Serializer to include extra user info
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -194,6 +196,25 @@ class DeviceFileDownloadView(APIView):
 
         response = FileResponse(open(abs_path, 'rb'), as_attachment=True)
         return response
+
+
+#Mange Device view
+# List all devices for the current user
+class DeviceListView(ListAPIView):
+    serializer_class = DeviceSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Device.objects.filter(user=self.request.user)
+
+# Delete a device
+class DeviceDeleteView(DestroyAPIView):
+    serializer_class = DeviceSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'device_id'
+
+    def get_queryset(self):
+        return Device.objects.filter(user=self.request.user)
 
 #logout view
 class LogoutView(APIView):
