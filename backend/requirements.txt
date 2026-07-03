@@ -30,7 +30,7 @@ daphne>=4.0.0
 asyncssh>=2.13.2
 
 # Paramiko (alternative SSH library, optional)
-paramiko>=3.4.0
+paramiko>=5.0.0
 
 # Optional: dotenv for environment variable management
 python-dotenv>=1.0.0
