@@ -33,7 +33,7 @@ asyncssh>=2.13.2
 paramiko>=3.4.0
 
 # Optional: dotenv for environment variable management
-python-dotenv>=1.0.0
+python-dotenv>=1.2.2
 
 # Optional: Improve request/response handling
 requests>=2.31.0
