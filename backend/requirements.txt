@@ -24,7 +24,7 @@ django-cors-headers>=4.0.0
 channels>=4.0.0
 
 # ASGI server (needed for Channels)
-daphne>=4.0.0
+daphne>=4.2.2
 
 # Async SSH support (for SSH/WebSocket bridge)
 asyncssh>=2.13.2
