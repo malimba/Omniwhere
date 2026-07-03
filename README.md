@@ -1,5 +1,7 @@
 # Omniwhere Technologies 🌐
 
+![Django](https://img.shields.io/badge/Django-DRF-092E20?style=flat-square&logo=django&logoColor=white) ![React](https://img.shields.io/badge/React-Vite-61DAFB?style=flat-square&logo=react&logoColor=black) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+
 **Your OS. Your Files. Anywhere. On Any Device.**
 
 Omniwhere is a reimagined computing experience — not just remote access, but your entire digital environment, **portable and persistent**, and accessible from any device, anywhere in the world.
